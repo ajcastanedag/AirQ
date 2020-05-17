@@ -7,7 +7,6 @@ require(pals)
 library(ggdark)
 require(reshape2)
 library(RColorBrewer)
-
 ######################## PREPARE THE DATA 
 getwd()
 setwd("Data")
@@ -51,6 +50,21 @@ ggplot(Data, aes(x=LON, y=LAT) ) +
        x = "Longitude",
        y = "Latitude",
        color = "Bins")
+
+######################## PLOT DENSITY 2 TO CHECK SLOW POINTS
+ggplot(Data, aes(x=LON, y=LAT) ) +
+  stat_density_2d(aes(fill = ..density..), geom = "raster", contour = FALSE) +
+  scale_fill_distiller(palette= "RdYlBu") +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  dark_theme_gray() +
+  geom_path(lineend = "round", color="Black") +
+  labs(title = "GPS DENSITY",
+       subtitle = "Date: 17/05/20",
+       x = "Longitude",
+       y = "Latitude",
+       color = "Bins")
+
 
 ######################## EXPORT GEOPACKAGE
 p.sf <- st_as_sf(Data, coords = c("LAT", "LON"), crs = 4326) 
