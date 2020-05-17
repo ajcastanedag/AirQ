@@ -1,7 +1,9 @@
+library(ggplot2)
 library(ggmap)
 library(sf)
 
-setwd("C:\\Users\\Cowboybebop\\Documents\\EAGLE\\0_Other\\Additional_Projects\\AirQ\\R")
+getwd()
+setwd("Data")
 file <- "TEST.TXT"
 Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
 names(Data) <- c("ID","LON","LAT","ALT","TIME","DATE","SAT","SPEED")
@@ -14,9 +16,4 @@ ggplot(Data)+
   coord_fixed(ratio = 1)
 
 p.sf <- st_as_sf(Data, coords = c("LAT", "LON"), crs = 4326) 
-
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
-
-map <- get_googlemap('houston', markers = df, path = df, scale = 2)
-
-ggmap(map, extent ='device')
