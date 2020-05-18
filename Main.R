@@ -10,7 +10,8 @@ library(RColorBrewer)
 ######################## PREPARE THE DATA 
 getwd()
 setwd("Data")
-file <- "TEST.TXT"
+list.files(getwd())
+file <- "AJCG_LOG_2.TXT"
 Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
 names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED")
 
@@ -71,7 +72,7 @@ ggplot(Data, aes(x=LON, y=LAT) ) +
        color = "Bins") 
 
 ######################## EXPORT GEOPACKAGE
-p.sf <- st_as_sf(Data, coords = c("LAT", "LON"), crs = 4326) 
+p.sf <- st_as_sf(Data, coords = c("LON", "LAT"), crs = 4326) 
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
 
