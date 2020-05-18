@@ -14,14 +14,19 @@ file <- "TEST.TXT"
 Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
 names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED")
 
-######################## STORE AND DELETE OUTLINERS 
+######################## DELETE LAT LON OUTLINERS 
 LongOut <- boxplot(Data$LON)$out
 LatgOut <- boxplot(Data$LAT)$out
 
 Data <- Data[!Data$LON %in% LongOut,]
 Data <- Data[!Data$LAT %in% LatgOut,]
 
+######################## DELETE LESS THAN 3 SAT data 
+Data <- Data[Data$SAT > 3,]
+
+######################## RESET ID
 Data$ID <- seq(1:length(Data$ID))
+
 ######################## PLOT DATA
 Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
   geom_point() +
@@ -63,14 +68,11 @@ ggplot(Data, aes(x=LON, y=LAT) ) +
        subtitle = "Date: 17/05/20",
        x = "Longitude",
        y = "Latitude",
-       color = "Bins")
-
+       color = "Bins") 
 
 ######################## EXPORT GEOPACKAGE
 p.sf <- st_as_sf(Data, coords = c("LAT", "LON"), crs = 4326) 
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
-
-
 
 
 ###########################################################################################
