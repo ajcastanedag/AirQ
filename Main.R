@@ -10,7 +10,8 @@ library(RColorBrewer)
 ######################## PREPARE THE DATA 
 getwd()
 setwd("Data")
-file <- "TEST.TXT"
+list.files(getwd())
+file <- "AJCG_LOG_2.TXT"
 Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
 names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED")
 
