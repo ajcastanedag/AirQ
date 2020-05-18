@@ -84,6 +84,11 @@ st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 # transform Fusion2020 into package to aquire S1&S2$S5 images from the GPS TRACK automatically 
 
 
+### transform integer to %d%m%Y date
+Data <- transform(Data, DATE = as.Date(as.character(DATE), "%d%m%Y"))
+ 
+Data  <- transform(Data, TIME = as.Date(as.character(TIME), "%H:%M:%S"))
+
 
 
 
