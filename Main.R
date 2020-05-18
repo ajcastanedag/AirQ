@@ -71,4 +71,18 @@ p.sf <- st_as_sf(Data, coords = c("LAT", "LON"), crs = 4326)
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
 
+
+
+###########################################################################################
+####################################### IDEAS  ############################################
+###########################################################################################
+
+# use and mod the https://movevis.org/ package to plot raster characteristics from the GPS TRACKS
+
+# transform Fusion2020 into package to aquire S1&S2$S5 images from the GPS TRACK automatically 
+
+
+
+
+
 #https://cran.r-project.org/web/packages/pals/vignettes/pals_examples.html
