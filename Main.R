@@ -72,7 +72,7 @@ ggplot(Data, aes(x=LON, y=LAT) ) +
        color = "Bins") 
 
 ######################## EXPORT GEOPACKAGE
-p.sf <- st_as_sf(Data, coords = c("LAT", "LON"), crs = 4326) 
+p.sf <- st_as_sf(Data, coords = c("LON", "LAT"), crs = 4326) 
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
 
