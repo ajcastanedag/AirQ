@@ -81,7 +81,12 @@ ggplot(Data, aes(x=LON, y=LAT) ) +
        y = "Latitude",
        color = "Bins") 
 
-######################## EXPORT GEOPACKAGE
+
+############################### map it ###########################################
+
+leaflet(Data) %>% addTiles() %>% addPolylines(~LON, ~LAT)
+
+######################## EXPORT GEOPACKAGE##########################
 p.sf <- st_as_sf(Data, coords = c("LON", "LAT"), crs = 4326) 
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
