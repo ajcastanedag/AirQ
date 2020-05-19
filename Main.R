@@ -1,14 +1,23 @@
-######################## LOAD LIBRARIES 
+# List libraries
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
               "ggmap","pals","ggdark","reshape2","RColorBrewer")
 
-######################## PREPARE THE DATA #########################
-getwd()
+# import functions file 
 source("Functions.R")
+
+# Load libraries
 ipak(packages)
-setwd("Data")
+
+# Change path
+setwd(paste0(getwd(),"Data"))
+
+# Check datalog files
 list.files(getwd())
+
+# Import file            <- this has to be updated to read all files inside the "LOG" folder
 file <- "TEST.TXT"
+
+# Create dataframe
 Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
 names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED","Temperature","ALT_B","HUM","PPM")
 
@@ -26,7 +35,7 @@ Data <- Data[Data$SAT > 3,]
 Data$ID <- seq(1:length(Data$ID))
 
 ######################## PLOT DATA
-Plot <- ggplot(Data, aes(x=LON, y=LAT, color=ALT_B))+
+Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
   geom_point() +
   geom_path(lineend = "round") +
   coord_fixed(ratio = 1) +
