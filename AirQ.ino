@@ -8,15 +8,23 @@
 #include "Seeed_BME280.h"
 #include <Wire.h>
 
+// MQ135
+#include "MQ135.h"
+#define RZERO 76.63
+
 static const int RXPin = 2, TXPin = 3;
 static const uint32_t GPSBaud = 9600;
 
 int ID = 0;
 float BMEaltitude;
 
+const int ANALOGPIN=0;
+
 File dataFile;
 
 BME280 bme280;
+
+MQ135 gasSensor = MQ135(ANALOGPIN);
 
 // The TinyGPS++ object
 TinyGPSPlus gps;
@@ -65,6 +73,8 @@ void loop(){
       dataFile.print(bme280.calcAltitude(bme280.getPressure()));
       dataFile.print(",");
       dataFile.print(bme280.getHumidity());
+      dataFile.print(",");
+      dataFile.print(gasSensor.getPPM());
       dataFile.println("");    
       dataFile.close();
     }
