@@ -1,29 +1,16 @@
 ######################## LOAD LIBRARIES 
-ipak <- function(pkg){
-  
-  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  
-  if (length(new.pkg)) 
-    
-    install.packages(new.pkg, dependencies = TRUE)
-  
-  sapply(pkg, require, character.only = TRUE)
-  
-}
-
-
-### install libaries
-
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
               "ggmap","pals","ggdark","reshape2","RColorBrewer")
 
 ######################## PREPARE THE DATA #########################
 getwd()
+source("Functions.R")
+ipak(packages)
 setwd("Data")
 list.files(getwd())
-file <- "AJCG_LOG_2.TXT"
+file <- "TEST.TXT"
 Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
-names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED")
+names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED","Temperature","ALT_B","HUM","PPM")
 
 ######################## DELETE LAT LON OUTLINERS 
 LongOut <- boxplot(Data$LON)$out
@@ -39,7 +26,7 @@ Data <- Data[Data$SAT > 3,]
 Data$ID <- seq(1:length(Data$ID))
 
 ######################## PLOT DATA
-Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
+Plot <- ggplot(Data, aes(x=LON, y=LAT, color=ALT_B))+
   geom_point() +
   geom_path(lineend = "round") +
   coord_fixed(ratio = 1) +
@@ -51,6 +38,7 @@ Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
        y = "Latitude",
        color = "Speed m/s")
 
+Plot
 ######################## MAKE GIF
 Gif <- Plot + transition_reveal(along = ID)
 animate(base, fps = 10, width = 694, height = 403)

@@ -47,7 +47,7 @@ void loop(){
   // This sketch displays information every time a new sentence is correctly encoded.
   while (ss.available() > 0){
     gps.encode(ss.read());
-    if (gps.location.isUpdated()){
+    if (gps.location.isUpdated() && gps.satellites.value() > 0){
       Serial.println("Working...");
       ID = ID + 1;
       // Declare and open txt file in SD
@@ -75,9 +75,12 @@ void loop(){
       dataFile.print(bme280.getHumidity());
       dataFile.print(",");
       dataFile.print(gasSensor.getPPM());
-      dataFile.println("");    
+      dataFile.println("");
       dataFile.close();
+      Serial.print(gps.satellites.value());
+      Serial.print(" - ");
+      Serial.print(ID);
+      Serial.println("");
     }
   }
-  Serial.println("Not Working... ");
 }
