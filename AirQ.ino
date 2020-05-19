@@ -1,14 +1,22 @@
+// GPS MODULE 
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
+// SD MODULE 
 #include <SD.h>
 #include <SPI.h>
+// BME 280 MODULE 
+#include "Seeed_BME280.h"
+#include <Wire.h>
 
 static const int RXPin = 2, TXPin = 3;
 static const uint32_t GPSBaud = 9600;
 
 int ID = 0;
+float BMEaltitude;
 
 File dataFile;
+
+BME280 bme280;
 
 // The TinyGPS++ object
 TinyGPSPlus gps;
@@ -22,6 +30,9 @@ void setup(){
   if (!SD.begin(10)) {
     Serial.println("SD Fail"); 
   }else{Serial.println("SD OK");}
+  if (!bme280.init()) {
+        Serial.println("BME280 error!");
+    }else{Serial.println("BME280 OK");}
 }
 
 void loop(){
@@ -29,28 +40,7 @@ void loop(){
   while (ss.available() > 0){
     gps.encode(ss.read());
     if (gps.location.isUpdated()){
-      Serial.print(ID);
-      Serial.print(",");
-      Serial.print(gps.location.lat(), 6);
-      Serial.print(",");
-      //Serial.print(" LON= "); 
-      Serial.print(gps.location.lng(), 6);
-      Serial.print(",");
-      //Serial.print(" ALT= "); 
-      Serial.print(gps.altitude.meters());
-      Serial.print(",");
-      //Serial.print(" Time= "); 
-      Serial.print(gps.time.value());
-      Serial.print(",");
-      //Serial.print(" Date= "); 
-      Serial.print(gps.date.value());
-      Serial.print(",");
-      //Serial.print(" Sat= "); 
-      Serial.print(gps.satellites.value());
-      Serial.print(",");
-      //Serial.print(" Speed= "); 
-      Serial.print(gps.speed.mps());  
-      Serial.println("");  
+      Serial.println("Working...");
       ID = ID + 1;
       // Declare and open txt file in SD
       dataFile = SD.open("Test.txt", FILE_WRITE);
@@ -69,8 +59,15 @@ void loop(){
       dataFile.print(gps.satellites.value());
       dataFile.print(",");
       dataFile.print(gps.speed.mps());  
+      dataFile.print(",");
+      dataFile.print(bme280.getTemperature(),1);
+      dataFile.print(",");
+      dataFile.print(bme280.calcAltitude(bme280.getPressure()));
+      dataFile.print(",");
+      dataFile.print(bme280.getHumidity());
       dataFile.println("");    
       dataFile.close();
     }
   }
+  Serial.println("Not Working... ");
 }
