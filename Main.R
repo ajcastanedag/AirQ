@@ -1,13 +1,23 @@
 ######################## LOAD LIBRARIES 
-library(ggplot2)
-library(gganimate)
-library(ggmap)
-library(sf)
-require(pals)
-library(ggdark)
-require(reshape2)
-library(RColorBrewer)
-######################## PREPARE THE DATA 
+ipak <- function(pkg){
+  
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  
+  if (length(new.pkg)) 
+    
+    install.packages(new.pkg, dependencies = TRUE)
+  
+  sapply(pkg, require, character.only = TRUE)
+  
+}
+
+
+### install libaries
+
+packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
+              "ggmap","pals","ggdark","reshape2","RColorBrewer")
+
+######################## PREPARE THE DATA #########################
 getwd()
 setwd("Data")
 list.files(getwd())
@@ -71,7 +81,12 @@ ggplot(Data, aes(x=LON, y=LAT) ) +
        y = "Latitude",
        color = "Bins") 
 
-######################## EXPORT GEOPACKAGE
+
+############################### map it ###########################################
+
+leaflet(Data) %>% addTiles() %>% addPolylines(~LON, ~LAT)
+
+######################## EXPORT GEOPACKAGE##########################
 p.sf <- st_as_sf(Data, coords = c("LON", "LAT"), crs = 4326) 
 st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
