@@ -9,7 +9,7 @@ source("Functions.R")
 ipak(packages)
 
 # Change path
-setwd(paste0(getwd(),"Data"))
+setwd(paste0(getwd(),"/Data"))
 
 # Check datalog files
 list.files(getwd())
@@ -47,10 +47,9 @@ Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
        y = "Latitude",
        color = "Speed m/s")
 
-Plot
 ######################## MAKE GIF
 Gif <- Plot + transition_reveal(along = ID)
-animate(base, fps = 10, width = 694, height = 403)
+animate(Gif, fps = 10, width = 694, height = 403)
 anim_save("Test.gif")
 
 ######################## PLOT DENSITY TO CHECK SLOW POINTS
@@ -101,9 +100,6 @@ st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
 
 Data <- transform(Data, DATE = as.Date(as.character(DATE), "%d%m%Y"))
-
- 
-
 
 
 
