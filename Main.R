@@ -24,15 +24,20 @@ names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED","Temperature
 ######################## DELETE LAT LON OUTLINERS 
 LongOut <- boxplot(Data$LON)$out
 LatgOut <- boxplot(Data$LAT)$out
-
 Data <- Data[!Data$LON %in% LongOut,]
 Data <- Data[!Data$LAT %in% LatgOut,]
 
 ######################## DELETE LESS THAN 3 SAT data 
-Data <- Data[Data$SAT > 3,]
+#Data <- Data[Data$SAT > 3,]
 
 ######################## RESET ID
 Data$ID <- seq(1:length(Data$ID))
+
+######################## Transform Date to %d%m%y 
+Data <- transform(Data, DATE = as.Date(as.character(DATE), "%d%m%y"))
+
+######################## Transform Time to %h%m%s 
+
 
 ######################## PLOT DATA
 Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
@@ -96,10 +101,7 @@ st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 # transform Fusion2020 into package to aquire S1&S2$S5 images from the GPS TRACK automatically 
 
 
-### transform integer to %d%m%Y date
 
-
-Data <- transform(Data, DATE = as.Date(as.character(DATE), "%d%m%Y"))
 
 
 
