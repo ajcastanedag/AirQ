@@ -1,6 +1,6 @@
 # List libraries
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
-              "ggmap","pals","ggdark","reshape2","RColorBrewer")
+              "ggmap","pals","ggdark","reshape2","RColorBrewer","plyr")
 
 # import functions file 
 source("Functions.R")
@@ -107,3 +107,69 @@ st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 
 
 #https://cran.r-project.org/web/packages/pals/vignettes/pals_examples.html
+
+
+
+
+
+
+###########################################################################################
+#################################### GUI PLOTS  ###########################################
+###########################################################################################
+
+# ALTITUDE
+Graph_Y_Min <- round_any(min(Data$ALT_B),10)
+Graph_Y_Max <- round_any(max(Data$ALT_B),5, f = ceiling)
+Graph_X_Min <- 0
+Graph_X_Max <- round_any(max(Data$ID),50, f = ceiling)
+
+Alt_Area <- ggplot(Data, aes(x=ID,y=ALT_B)) +
+  geom_ribbon(aes(xmin=Graph_X_Min, xmax=Graph_X_Max,
+                  ymin=Graph_Y_Min, ymax=pmax(ALT_B)),
+              fill="white", alpha=0.2) +
+  geom_line() +
+  coord_cartesian(xlim = c(min(Data$ID),Graph_X_Max),
+                  ylim = c(Graph_Y_Min,Graph_Y_Max),
+                  expand = FALSE) +
+  dark_theme_gray() +
+  scale_x_continuous(breaks = seq(0, max(Data$ID), by = 50)) +
+  scale_y_continuous(breaks = seq(Graph_Y_Min, Graph_Y_Max, by=1)) +
+  theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm")) +
+  geom_rect(xmin = max(Data$ID), xmax = Graph_X_Max, ymin = Graph_Y_Min, ymax = Graph_Y_Max,   fill = "black") +
+  labs(title = "Trip altitude variations",
+       x = "Point ID",
+       y = "Recorded Atitude") 
+
+Alt_Area
+
+Alt_anim <- Alt_Area +
+  geom_point() +
+  geom_segment(aes(xend = length(ID), yend = ALT_B), linetype = 2, colour = 'grey') + 
+  geom_text(aes(x = max(ID), label = ALT_B), hjust = -0.1) +           
+  transition_reveal(ID)
+
+animate(Alt_anim, height= 400, width= 600)
+anim_save("Alture.gif")
+######################## 
+# Temperature
+data <- data.frame(Specie = rep("out",100), Val = seq(1,100))
+
+# Stacked
+ggplot(data, aes(fill=Val, y=1, x=Specie)) + 
+  geom_bar(position="stack", stat="identity", width = 0.1) + 
+  scale_fill_distiller(palette= "RdYlBu") +
+  dark_theme_gray() +
+  coord_polar(theta = "y", start=-pi/2) +
+  ylim(c(0,max(data$Val)*2)) +
+  theme(axis.text.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.line.y = element_blank(),
+        axis.line.x = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank(),
+        legend.title = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank())
+
+
+
