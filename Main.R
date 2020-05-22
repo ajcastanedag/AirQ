@@ -1,6 +1,7 @@
 # List libraries
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
-              "ggmap","pals","ggdark","reshape2","RColorBrewer","plyr", "hms","stringi")
+              "ggmap","pals","ggdark","reshape2","RColorBrewer","plyr", "hms","stringi",
+              "shiny","shinyWidgets","shinythemes")
 
 # import functions file 
 source("Functions.R")
@@ -141,6 +142,12 @@ ggplot(data, aes(fill=Val, y=1, x=Specie)) +
         legend.title = element_blank(),
         panel.grid.minor = element_blank(),
         panel.background = element_blank())
+
+
+
+
+
+
 
 
 
