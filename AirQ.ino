@@ -45,10 +45,9 @@ void setup(){
 
 void loop(){
   // This sketch displays information every time a new sentence is correctly encoded.
-  while (ss.available() > 0){
+  if (ss.available() > 0){
     gps.encode(ss.read());
     if (gps.location.isUpdated() && gps.satellites.value() > 0){
-      Serial.println("Working...");
       ID = ID + 1;
       // Declare and open txt file in SD
       dataFile = SD.open("Test.txt", FILE_WRITE);

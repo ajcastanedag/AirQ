@@ -1,6 +1,6 @@
 # List libraries
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
-              "ggmap","pals","ggdark","reshape2","RColorBrewer","plyr")
+              "ggmap","pals","ggdark","reshape2","RColorBrewer","plyr", "hms","stringi")
 
 # import functions file 
 source("Functions.R")
@@ -8,36 +8,8 @@ source("Functions.R")
 # Load libraries
 ipak(packages)
 
-# Change path
-setwd(paste0(getwd(),"/Data"))
-
-# Check datalog files
-list.files(getwd())
-
-# Import file            <- this has to be updated to read all files inside the "LOG" folder
-file <- "TEST.TXT"
-
-# Create dataframe
-Data <- read.table(file, header = FALSE, sep = ",", dec = ".")
-names(Data) <- c("ID","LAT","LON","ALT","TIME","DATE","SAT","SPEED","Temperature","ALT_B","HUM","PPM")
-
-######################## DELETE LAT LON OUTLINERS 
-LongOut <- boxplot(Data$LON)$out
-LatgOut <- boxplot(Data$LAT)$out
-Data <- Data[!Data$LON %in% LongOut,]
-Data <- Data[!Data$LAT %in% LatgOut,]
-
-######################## DELETE LESS THAN 3 SAT data 
-#Data <- Data[Data$SAT > 3,]
-
-######################## RESET ID
-Data$ID <- seq(1:length(Data$ID))
-
-######################## Transform Date to %d%m%y 
-Data <- transform(Data, DATE = as.Date(as.character(DATE), "%d%m%y"))
-
-######################## Transform Time to %h%m%s 
-
+# Load data
+LoadData()
 
 ######################## PLOT DATA
 Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
@@ -116,7 +88,6 @@ st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
 ###########################################################################################
 #################################### GUI PLOTS  ###########################################
 ###########################################################################################
-
 # ALTITUDE
 Graph_Y_Min <- round_any(min(Data$ALT_B),10)
 Graph_Y_Max <- round_any(max(Data$ALT_B),5, f = ceiling)
