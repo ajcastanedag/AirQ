@@ -36,10 +36,7 @@ LoadData <- function(file_ID = 4){
   # Delete less than 3 SAT data even if its blocked from the arduino
   Data <<- Data[Data$SAT >= 3,]
   
-  # Reset ID
-  Data$ID <<- seq(1:length(Data$ID))
-  
-  # Transform Date to %d%m%y 
+    # Transform Date to %d%m%y 
   Data <<- Data %>% mutate(DATE = as.Date(as.character(DATE), "%d%m%y"))
   
   # Transform Time to %h%m%s 
@@ -55,5 +52,9 @@ LoadData <- function(file_ID = 4){
   }))
   
   Data <<- Data %>% mutate(TIME = as_hms(TIME))
+  
+  # Reset ID
+  Data$ID <<- seq(1:length(Data$ID))
+  rownames(Data) <<- NULL
   
 }
