@@ -18,7 +18,7 @@ ui <- fluidPage( theme = shinytheme("slate"),
                 step=1,
                 value=c(min(Data$ID),
                         max(Data$ID)))),
-  mainPanel(plotOutput("plot2")))
+  mainPanel(plotOutput("Alture", width = "100%")))
 
 ##################################################################################################
 server <- function(input,output){
@@ -28,8 +28,8 @@ server <- function(input,output){
     test <- Data[Data$ID %in% seq(from=min(input$num),to=max(input$num),by=1),]
   })
   
-  #################### Plot Data
-  output$plot2<-renderPlot({
+  #################### Alture data
+  output$Alture<-renderPlot({
     ggplot(dat(), aes(x=ID,y=ALT_B)) +
       geom_ribbon(aes(xmin=Graph_X_Min, xmax=Graph_X_Max,
                       ymin=Graph_Y_Min, ymax=pmax(ALT_B)),
@@ -41,7 +41,7 @@ server <- function(input,output){
       dark_theme_classic() +
       scale_x_continuous(breaks = seq(0, max(Data$ID), by = 50)) +
       scale_y_continuous(breaks = seq(Graph_Y_Min, Graph_Y_Max, by=1)) +
-      theme(plot.margin = unit(c(0.5,2,0.5,0.5), "cm"),
+      theme(plot.margin = unit(c(0.2,0.5,0.2,0.2), "cm"),
             plot.background = element_rect(fill = "#282d32ff"),
             panel.background = element_rect(fill = "#282d32ff")) +
       geom_rect(xmin = max(Data$ID), xmax = Graph_X_Max, ymin = Graph_Y_Min, ymax = Graph_Y_Max,   fill = "#282d32ff") +
@@ -52,7 +52,7 @@ server <- function(input,output){
       labs(title = "Trip altitude variations",
            x = "Point ID",
            y = "Recorded Atitude") 
-  })
+  }, height = 500, width = 900)
 }
 
 # 114 TO 124 ERROR <- FIX
