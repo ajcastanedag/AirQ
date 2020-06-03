@@ -10,21 +10,22 @@ source("Functions.R")
 ipak(packages)
 
 # Load data
-LoadData()
+LoadData(4)
 
 ######################## PLOT DATA
-Plot <- ggplot(Data, aes(x=LON, y=LAT, color=SPEED))+
+Plot <- ggplot(Data, aes(x=LON, y=LAT, color=Temperature))+
   geom_point() +
   geom_path(lineend = "round") +
   coord_fixed(ratio = 1) +
   scale_color_gradientn(colours = jet(100)) +
   dark_theme_gray() +
   labs(title = "GPS TEST",
-       subtitle = "Date: 17/05/20",
+       subtitle = paste0("Date:", Data$DATE[1]),
        x = "Longitude",
        y = "Latitude",
        color = "Speed m/s")
 
+Plot
 ######################## MAKE GIF
 Gif <- Plot + transition_reveal(along = ID)
 animate(Gif, fps = 10, width = 694, height = 403)

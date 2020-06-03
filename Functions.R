@@ -17,7 +17,7 @@ ipak <- function(pkg){
 # LoadData function imports a single txt file from the Data folder by its
 # index in the list.files() function
 
-LoadData <- function(file_ID = 4){
+LoadData <- function(file_ID = 6){
   
   # Check datalog files
   Av_Data <- list.files(paste0(getwd(),"/Data"))
