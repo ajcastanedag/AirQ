@@ -13,7 +13,7 @@ ipak(packages)
 LoadData(4)
 
 ######################## PLOT DATA
-Plot <- ggplot(Data, aes(x=LON, y=LAT, color=Temperature))+
+Plot <- ggplot(Data, aes(x=LON, y=LAT, color=ALT_B))+
   geom_point() +
   geom_path(lineend = "round") +
   coord_fixed(ratio = 1) +
@@ -23,7 +23,7 @@ Plot <- ggplot(Data, aes(x=LON, y=LAT, color=Temperature))+
        subtitle = paste0("Date:", Data$DATE[1]),
        x = "Longitude",
        y = "Latitude",
-       color = "Speed m/s")
+       color = "Height m")
 
 Plot
 ######################## MAKE GIF
