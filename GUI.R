@@ -7,7 +7,7 @@ Graph_Y_Max <- round_any(max(Data$ALT_B),5, f = ceiling)
 Graph_X_Min <- 0
 Graph_X_Max <- round_any(max(Data$ID),50, f = ceiling)
 
-Base_Alture_Plot <- ggplot(Data[114:150,], aes(x=ID,y=ALT_B)) +
+Base_Alture_Plot <- ggplot(Data, aes(x=ID,y=ALT_B)) +
   geom_ribbon(aes(xmin=Graph_X_Min, xmax=Graph_X_Max,
                   ymin=Graph_Y_Min, ymax=pmax(ALT_B)),
               fill="#606437ff", alpha=0.2) +
@@ -80,7 +80,7 @@ server <- function(input,output){
       labs(title = "Trip altitude variations",
            x = "Point ID",
            y = "Recorded Atitude") 
-  }, height = 500, width = 900)
+  }, height = 300, width = 550)
 }
 
 # 114 TO 124 ERROR <- FIX
