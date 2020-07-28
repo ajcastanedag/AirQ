@@ -1,7 +1,7 @@
 # List libraries
 packages <- c("sp","raster","rlist","getSpatialData","sf","sp","list","leaflet","ggplot2","gganimate",
               "ggmap","pals","ggdark","reshape2","RColorBrewer","plyr", "hms","stringi",
-              "shiny","shinyWidgets","shinythemes")
+              "shiny","shinyWidgets","shinythemes", "patchwork")
 
 # import functions file 
 source("Functions.R")
@@ -10,12 +10,29 @@ source("Functions.R")
 ipak(packages)
 
 # Load data
-LoadData(4)
+LoadData(1)
 
 ###########################################################################################
 #################################### GUI PLOTS  ###########################################
-###########################################################################################
-###########################################################################################
+########################################################################################### MAP
+Map <- ggplot(Data, aes(x=LON, y=LAT, color=PPM))+
+  geom_point() +
+  geom_path(lineend = "round") +
+  coord_fixed(ratio = 1) +
+  scale_color_gradientn(colours = jet(100)) +
+  dark_theme_gray() +
+  labs(title = "GPS TEST",
+       subtitle = paste0("Date:", Data$DATE[1]),
+       x = "Longitude",
+       y = "Latitude",
+       color = "PPM") +
+  theme(plot.margin = unit(c(0.2,0.5,0.2,0.2), "cm"),
+        plot.background = element_rect(fill = "#282d32ff"),
+        panel.background = element_rect(fill = "#282d32ff"),
+        legend.background=element_blank()) 
+
+Map
+########################################################################################### BAROMETER
 #Difine some constant values for the Alture plot
 Graph_Y_Min <- round_any(min(Data$ALT_B),10)
 Graph_Y_Max <- round_any(max(Data$ALT_B),5, f = ceiling)
@@ -46,7 +63,7 @@ Base_Alture_Plot <- ggplot(Data, aes(x=ID,y=ALT_B)) +
 
 
 Base_Alture_Plot
-###########################################################################################
+########################################################################################### SPEED
 Max_Y_Polar <- 1.168
 Data$SPEED_p <- Data$SPEED * Max_Y_Polar / max(Data$SPEED)
 
@@ -58,10 +75,10 @@ Velocity_Plot <- ggplot(Data, aes(ymax = 2, ymin = 0, xmax = 2, xmin = 1, group 
   # Add max vel semicircle
   annotate("rect", xmin=1, xmax=1.1, ymin=1, ymax=Max_Y_Polar, alpha=0.8, fill="#5b1d1cff") +
   # Add data semicircle
-  annotate("rect", xmin=1, xmax=1.1, ymin=0, ymax=Data$SPEED_p[100], alpha=0.9, fill="#c8c8c8ff") +
+  annotate("rect", xmin=1, xmax=1.1, ymin=0, ymax=Data$SPEED_p, alpha=0.9, fill="#c8c8c8ff") +
   # Polar Y coordinate starting from -pi/2
   coord_polar(theta = "y", start=-7*pi/12) + xlim(c(0, 2)) + ylim(c(0,2)) +
-  annotate(geom="text", x=0, y=1, label=Data$SPEED[100], color="#c8c8c8ff", size = 8) +
+  annotate(geom="text", x=0, y=1, label=Data$SPEED, color="#c8c8c8ff", size = 8) +
   # Put text indicators
   annotate(geom="text", x=0.6, y=0.59, label="SPEED", color="#c8c8c8ff", size = 6, alpha=0.8) +
   # Put max min indicators
@@ -74,25 +91,62 @@ Velocity_Plot <- ggplot(Data, aes(ymax = 2, ymin = 0, xmax = 2, xmin = 1, group 
         axis.ticks.x=element_blank(),
         axis.title.y=element_blank(),
         axis.text.y=element_blank(),
-        axis.ticks.y=element_blank()) +
+        axis.ticks.y=element_blank(),
+        plot.background = element_rect(fill = "#282d32ff"),
+        panel.background = element_rect(fill = "#282d32ff")) +
   labs(title = "Speed", subtitle = "") 
 
 Velocity_Plot
 
-#Gif <- Velocity_Plot + transition_states(Data$ID) +
-#  ease_aes('linear') +
-#  enter_fade() +
-#  exit_fade()
+########################################################################################### SPEED2
+Max_Y_Polar <- 1.168
+Data$SPEED_p <- Data$SPEED * Max_Y_Polar / max(Data$SPEED)
 
-animate(Gif, fps = 10, width = 1200, height = 1200)
+Velocity_Plot2 <- ggplot(Data, aes(ymax = 2, ymin = 0, xmax = 2, xmin = 1, group = ID)) +
+  # Assign theme
+  dark_theme_classic() +
+  # Add background semicircle
+  annotate("rect", xmin=1, xmax=1.1, ymin=0, ymax=Max_Y_Polar, alpha=0.5, fill="#52524fff") +
+  # Add max vel semicircle
+  annotate("rect", xmin=1, xmax=1.1, ymin=1, ymax=Max_Y_Polar, alpha=0.8, fill="#5b1d1cff") +
+  # Add data semicircle
+  annotate("rect", xmin=1, xmax=1.1, ymin=0, ymax=Data$SPEED_p[100], alpha=0.9, fill="#c8c8c8ff") +
+  # Polar Y coordinate starting from -pi/2
+  coord_polar(theta = "y", start=-7*pi/12) + xlim(c(0, 2)) + ylim(c(0,2)) +
+  annotate(geom="text", x=0, y=1, label=Data$SPEED, color="#c8c8c8ff", size = 8) +
+  # Put text indicators
+  annotate(geom="text", x=0.6, y=0.59, label="SPEED", color="#c8c8c8ff", size = 6, alpha=0.8) +
+  # Put max min indicators
+  annotate(geom="text", x=1.3, y=0, label="0", color="#c8c8c8ff", size = 5, alpha=0.8) +
+  annotate(geom="text", x=1.35, y=Max_Y_Polar, label=round(max(Data$SPEED)), color="#c8c8c8ff", size = 5, alpha=0.8) +
+  # Polar Y coordinate starting from -pi/2
+  theme(line = element_blank(),
+        axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        plot.background = element_rect(fill = "#282d32ff"),
+        panel.background = element_rect(fill = "#282d32ff")) +
+  labs(title = "Speed", subtitle = "") 
 
+Velocity_Plot2
 ###########################################################################################
 
+# Gif <- Velocity_Plot + transition_states(Data$ID) +
+#   ease_aes('linear') +
+#   enter_fade() +
+#   exit_fade()
+# animate(Gif, fps = 10, width = 500, height = 500)
 
+###########################################################################################
+leaflet(Data) %>% addTiles() %>% addPolylines(~LON, ~LAT)
 
-
-
-
+Patch <- (Map)/(Base_Alture_Plot|Velocity_Plot|Velocity_Plot2) + plot_layout(ncol=1, heights=c(1,0.20)) 
+Patch + plot_annotation(title = "Bike DataLog",
+                                                          subtitle = "Version 1.0",
+                                                          caption = "Schientific Graphics - JMU")
 
 
 ###########################################################################################
@@ -105,7 +159,7 @@ animate(Gif, fps = 10, width = 1200, height = 1200)
 
 #https://cran.r-project.org/web/packages/pals/vignettes/pals_examples.html
 
-# ######################## PLOT DATA
+######################## PLOT DATA
 # Plot <- ggplot(Data, aes(x=LON, y=LAT, color=ALT_B))+
 #   geom_point() +
 #   geom_path(lineend = "round") +
@@ -151,8 +205,11 @@ animate(Gif, fps = 10, width = 1200, height = 1200)
 # 
 # 
 # ############################### map it ###########################################
-# leaflet(Data) %>% addTiles() %>% addPolylines(~LON, ~LAT)
+leaflet(Data) %>% addTiles() %>% addPolylines(~LON, ~LAT)
 # ######################## EXPORT GEOPACKAGE##########################
 # p.sf <- st_as_sf(Data, coords = c("LON", "LAT"), crs = 4326) 
 # st_write(p.sf, "Points_test.gpkg", driver="GPKG")  # Create a geopackage file
+
+
+anim_save("filename.gif", animation = last_animation())
 

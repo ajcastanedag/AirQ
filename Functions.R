@@ -20,7 +20,7 @@ ipak <- function(pkg){
 LoadData <- function(file_ID = 6){
   
   # Check datalog files
-  Av_Data <- list.files(paste0(getwd(),"/Data"))
+  Av_Data <<- list.files(paste0(getwd(),"/Data"))
   
   # Import file
   file <- paste0(getwd(),"/Data/",Av_Data[file_ID])
